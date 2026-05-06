@@ -27,6 +27,6 @@ class Farmer(Base):
 
     crops: Mapped[list["Crop"]] = relationship("Crop", back_populates="farmer", lazy="selectin")  # noqa: F821
     alerts: Mapped[list["Alert"]] = relationship("Alert", back_populates="farmer", lazy="selectin")  # noqa: F821
-    bookings: Mapped[list["Booking"]] = relationship(
+    bookings: Mapped[list["Booking"]] = relationship(  # noqa: F821
         "Booking", back_populates="farmer", lazy="selectin"
-    )  # noqa: F821
+    )
