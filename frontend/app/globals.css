@@ -4,28 +4,30 @@
 
 @layer base {
   :root {
-    --background: #fcfcfc;
-    --foreground: #0f172a;
+    --background: #050a06;
+    --foreground: #e0f2e6;
   }
 
   body {
     color: var(--foreground);
     background: var(--background);
+    /* Subtle neon gradient background for that Cyberpunk rural feel */
     background-image: 
-      radial-gradient(at 0% 0%, hsla(140, 100%, 94%, 1) 0px, transparent 50%),
-      radial-gradient(at 100% 0%, hsla(33, 100%, 94%, 1) 0px, transparent 50%);
+      radial-gradient(circle at 15% 50%, rgba(57, 255, 20, 0.03), transparent 25%),
+      radial-gradient(circle at 85% 30%, rgba(0, 243, 255, 0.03), transparent 25%);
     background-attachment: fixed;
+    /* Dark mode by default */
+    color-scheme: dark;
   }
 }
 
 @layer utilities {
-  .glass {
-    @apply bg-white/70 backdrop-blur-md border border-white/40 shadow-sm;
+  .glass-card {
+    @apply bg-agri-800/60 backdrop-blur-xl border border-agri-600/30 shadow-lg text-white;
   }
-  .glass-dark {
-    @apply bg-agri-900/80 backdrop-blur-lg border border-agri-700/50 shadow-lg text-white;
+  .glass-neon-border {
+    @apply border border-neon-green/30 shadow-[inset_0_0_10px_rgba(57,255,20,0.1)];
   }
-  /* Custom scrollbar for chat */
   .scrollbar-hide::-webkit-scrollbar {
     display: none;
   }

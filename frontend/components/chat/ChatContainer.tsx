@@ -4,6 +4,8 @@ import { Message } from "./types";
 import { MessageBubble } from "./MessageBubble";
 import { ChatInput } from "./ChatInput";
 import { Bot } from "lucide-react";
+import { IntelligenceCards } from "../feed/IntelligenceCards";
+import { CameraOverlay } from "../scanner/CameraOverlay";
 
 const API = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
 
@@ -13,7 +15,7 @@ export function ChatContainer() {
       id: "welcome",
       role: "assistant",
       content:
-        "আস্সালামু আলাইকুম! আমি **AgriPulse**। আপনার ফসল, পোকামাকড়, আবহাওয়া বা পশু-পাখি সম্পর্কে যেকোনো প্রশ্ন করুন। ছবিও পাঠাতে পারেন।",
+        "সালাম লিয়ন ভাই! আমি **কৃষি-শক্তি**। আপনার ফসল, পোকামাকড়, আবহাওয়া বা পশু-পাখি সম্পর্কে যেকোনো প্রশ্ন করুন।",
     },
   ]);
   const [input, setInput] = useState("");
@@ -22,51 +24,50 @@ export function ChatContainer() {
   const [loading, setLoading] = useState(false);
   const [sessionId] = useState(() => crypto.randomUUID());
   
+  // Neon-Ruralism specific states
+  const [agentStatus, setAgentStatus] = useState<"idle" | "listening" | "processing" | "alert">("idle");
+  const [showCameraOverlay, setShowCameraOverlay] = useState(false);
+  const [scanResult, setScanResult] = useState<string | undefined>();
+  
   const bottomRef = useRef<HTMLDivElement>(null);
 
-  // Auto scroll to bottom
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages, loading]);
 
+  const handleImageCapture = (file: File) => {
+    setImagePreview(URL.createObjectURL(file));
+    setShowCameraOverlay(true);
+    setAgentStatus("processing");
+    
+    // Simulate real-time AR scanning
+    setTimeout(() => {
+      setScanResult("Blast Disease Detected (৮০% নিশ্চিত)");
+      setAgentStatus("alert");
+    }, 2000);
+
+    const reader = new FileReader();
+    reader.onloadend = () => {
+      const base64String = reader.result as string;
+      const rawBase64 = base64String.split(',')[1] || base64String;
+      setImageBase64(rawBase64);
+    };
+    reader.readAsDataURL(file);
+  };
+
   const onImageDrop = useCallback(async (files: File[]) => {
     const file = files[0];
     if (!file) return;
-    
-    // Create local preview immediately
-    setImagePreview(URL.createObjectURL(file));
-    
-    // Try to upload to get base64
-    try {
-      const fd = new FormData();
-      fd.append("file", file);
-      const res = await fetch(`${API}/api/v1/chat/upload-image`, { method: "POST", body: fd });
-      if (res.ok) {
-        const data = await res.json();
-        if (data.image_base64) setImageBase64(data.image_base64);
-      } else {
-        // Fallback for demo/no-backend: convert to base64 locally
-        const reader = new FileReader();
-        reader.onloadend = () => {
-          const base64String = reader.result as string;
-          // Extract base64 without prefix if needed, or keep it depending on backend.
-          // The backend usually expects raw base64 or prefixed. Let's send the raw base64.
-          const rawBase64 = base64String.split(',')[1] || base64String;
-          setImageBase64(rawBase64);
-        };
-        reader.readAsDataURL(file);
-      }
-    } catch (e) {
-      // Fallback for demo mode
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        const base64String = reader.result as string;
-        const rawBase64 = base64String.split(',')[1] || base64String;
-        setImageBase64(rawBase64);
-      };
-      reader.readAsDataURL(file);
-    }
+    handleImageCapture(file);
   }, []);
+
+  const handleOverlayClose = () => {
+    setShowCameraOverlay(false);
+    setScanResult(undefined);
+    setAgentStatus("idle");
+    // Optionally trigger auto send
+    setInput(`আমি একটি ছবি স্ক্যান করেছি, ফলাফল: ${scanResult || "Blast Disease"}`);
+  };
 
   const sendMessage = async () => {
     if (!input.trim() && !imageBase64) return;
@@ -81,7 +82,9 @@ export function ChatContainer() {
     setMessages((prev) => [...prev, userMsg]);
     setInput("");
     setImagePreview(null);
+    setImageBase64(null); // Clear base64 right away to avoid resending
     setLoading(true);
+    setAgentStatus("processing");
 
     const placeholderId = crypto.randomUUID();
     setMessages((prev) => [
@@ -110,24 +113,24 @@ export function ChatContainer() {
             : m
         )
       );
+      setAgentStatus("idle");
     } catch (e) {
-      // Mock response for demo mode if backend is down
       setTimeout(() => {
         setMessages((prev) =>
           prev.map((m) =>
             m.id === placeholderId
               ? { 
                   ...m, 
-                  content: "দুঃখিত, সংযোগে সমস্যা হয়েছে অথবা এটি ডেমো মোড। আপনার প্রশ্নটি হলো: " + (input || "ছবি"), 
-                  agentUsed: "Mock Agent" 
+                  content: "লিওন ভাই, ১ বিঘা জমিতে ২০ কেজি ইউরিয়া দিন। (Demo Response)", 
+                  agentUsed: "Lite-Agent" 
                 }
               : m
           )
         );
+        setAgentStatus("idle");
       }, 1000);
     } finally {
       setLoading(false);
-      setImageBase64(null);
     }
   };
 
@@ -145,58 +148,81 @@ export function ChatContainer() {
           rating: rating === "up" ? "thumbs_up" : "thumbs_down",
         }),
       });
-    } catch (e) {
-      // Ignore if backend is down
-    }
+    } catch (e) { }
   };
 
   return (
-    <div className="flex flex-col h-full w-full max-w-4xl mx-auto rounded-2xl shadow-2xl overflow-hidden glass">
-      {/* Header inside container for mobile aesthetics */}
-      <div className="bg-white/80 backdrop-blur-md border-b border-slate-100 p-4 flex items-center gap-3 shrink-0 z-20">
-        <div className="w-10 h-10 rounded-xl bg-agri-600 shadow-md flex items-center justify-center text-white">
-          <Bot size={24} />
-        </div>
-        <div>
-          <h2 className="text-lg font-bold text-slate-800 leading-tight">AgriPulse Assistant</h2>
-          <div className="flex items-center gap-1.5 mt-0.5">
-            <span className="w-2 h-2 rounded-full bg-agri-500 animate-pulse"></span>
-            <p className="text-xs text-slate-500 font-medium">Online & ready</p>
-          </div>
-        </div>
-      </div>
-
-      {/* Message List */}
-      <div className="flex-1 overflow-y-auto p-4 sm:p-6 space-y-6 scrollbar-hide relative bg-slate-50/50">
-        {messages.map((msg) => (
-          <MessageBubble key={msg.id} message={msg} onFeedback={handleFeedback} />
-        ))}
-        {loading && (
-          <div className="flex justify-start animate-fade-in-up">
-            <div className="flex gap-2 bg-white px-4 py-3 rounded-2xl rounded-tl-sm shadow-sm border border-slate-100">
-              <span className="w-2 h-2 rounded-full bg-slate-300 animate-bounce" style={{ animationDelay: '0ms' }}></span>
-              <span className="w-2 h-2 rounded-full bg-slate-300 animate-bounce" style={{ animationDelay: '150ms' }}></span>
-              <span className="w-2 h-2 rounded-full bg-slate-300 animate-bounce" style={{ animationDelay: '300ms' }}></span>
+    <>
+      <div className="flex flex-col h-[90vh] md:h-full w-full max-w-lg mx-auto bg-agri-dark overflow-hidden shadow-2xl relative">
+        {/* Header - Minimal, Neon-Ruralism style */}
+        <div className="bg-agri-dark/90 backdrop-blur-xl border-b border-agri-800 p-4 flex items-center justify-between shrink-0 z-20">
+          <div className="flex items-center gap-3">
+            <div className="relative">
+              <div className="w-10 h-10 rounded-full bg-agri-800 border border-neon-green/50 flex items-center justify-center text-neon-green shadow-neon-green">
+                <Bot size={22} />
+              </div>
+              {agentStatus === "processing" && (
+                <span className="absolute -top-1 -right-1 flex h-3 w-3">
+                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-neon-blue opacity-75"></span>
+                  <span className="relative inline-flex rounded-full h-3 w-3 bg-neon-blue"></span>
+                </span>
+              )}
+            </div>
+            <div>
+              <h2 className="text-lg font-bold text-white tracking-wide">কৃষি-শক্তি <span className="text-neon-green text-xs font-mono ml-1">v2.0</span></h2>
             </div>
           </div>
-        )}
-        <div ref={bottomRef} className="h-2" />
+          {/* Profile Icon Placeholder */}
+          <div className="w-8 h-8 rounded-full bg-earth-500 border border-earth-300"></div>
+        </div>
+
+        {/* Feed & Messages Area */}
+        <div className="flex-1 overflow-y-auto p-4 space-y-6 scrollbar-hide relative z-10">
+          {/* Only show cards if there are few messages, to act as a feed */}
+          {messages.length <= 3 && <IntelligenceCards />}
+          
+          {messages.map((msg) => (
+            <MessageBubble key={msg.id} message={msg} onFeedback={handleFeedback} />
+          ))}
+          
+          {loading && (
+            <div className="flex justify-start animate-fade-in-up">
+              <div className="flex gap-2 bg-agri-800/60 px-4 py-3 rounded-2xl rounded-tl-sm border border-neon-blue/30">
+                <span className="w-2 h-2 rounded-full bg-neon-blue animate-pulse"></span>
+                <span className="w-2 h-2 rounded-full bg-neon-blue animate-pulse" style={{ animationDelay: '150ms' }}></span>
+                <span className="w-2 h-2 rounded-full bg-neon-blue animate-pulse" style={{ animationDelay: '300ms' }}></span>
+              </div>
+            </div>
+          )}
+          <div ref={bottomRef} className="h-10" />
+        </div>
+
+        {/* Input */}
+        <ChatInput
+          input={input}
+          setInput={setInput}
+          loading={loading}
+          onSend={sendMessage}
+          imagePreview={showCameraOverlay ? null : imagePreview}
+          setImagePreview={setImagePreview}
+          onImageDrop={onImageDrop}
+          clearImage={() => {
+            setImagePreview(null);
+            setImageBase64(null);
+          }}
+          agentStatus={agentStatus}
+          setAgentStatus={setAgentStatus}
+        />
       </div>
 
-      {/* Input */}
-      <ChatInput
-        input={input}
-        setInput={setInput}
-        loading={loading}
-        onSend={sendMessage}
-        imagePreview={imagePreview}
-        setImagePreview={setImagePreview}
-        onImageDrop={onImageDrop}
-        clearImage={() => {
-          setImagePreview(null);
-          setImageBase64(null);
-        }}
-      />
-    </div>
+      {/* Camera Overlay */}
+      {showCameraOverlay && imagePreview && (
+        <CameraOverlay 
+          imagePreview={imagePreview} 
+          onClose={handleOverlayClose}
+          scanResult={scanResult}
+        />
+      )}
+    </>
   );
 }

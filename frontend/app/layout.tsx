@@ -1,18 +1,22 @@
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
+import { Noto_Sans_Bengali } from "next/font/google";
 import "./globals.css";
 
-const inter = Inter({ subsets: ["latin"] });
+const notoBengali = Noto_Sans_Bengali({ 
+  subsets: ["bengali", "latin"],
+  weight: ["400", "500", "600", "700"],
+});
 
 export const metadata: Metadata = {
-  title: "AgriPulse — কৃষক সহকারী",
-  description: "বাংলাদেশের কৃষকদের জন্য AI চ্যাটবট",
+  title: "Krishi-Shakti v2.0",
+  description: "কৃষি-শক্তি — আপনার স্মার্ট কৃষি সহকারী",
+  manifest: "/manifest.json",
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="bn">
-      <body className={`${inter.className} min-h-screen font-sans antialiased`}>
+    <html lang="bn" className="dark">
+      <body className={`${notoBengali.className} min-h-screen font-sans antialiased bg-agri-dark text-white`}>
         {children}
       </body>
     </html>

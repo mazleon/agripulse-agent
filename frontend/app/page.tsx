@@ -2,12 +2,12 @@ import { ChatContainer } from "@/components/chat/ChatContainer";
 
 export default function HomePage() {
   return (
-    <main className="flex flex-col min-h-screen p-4 md:p-8">
+    <main className="flex flex-col h-[100dvh] w-full bg-black sm:p-4 md:p-8 items-center justify-center">
       {/* 
-        Header is moved inside the ChatContainer to make the design more cohesive
-        and app-like. The main page just acts as a padding wrapper.
+        The container handles the full screen on mobile (100dvh) 
+        and shows up as a centered max-w-lg device-like frame on desktop.
       */}
-      <div className="flex-1 w-full flex items-center justify-center">
+      <div className="w-full h-full max-w-lg relative sm:rounded-[2.5rem] sm:border-[8px] sm:border-agri-900 shadow-2xl overflow-hidden bg-agri-dark">
         <ChatContainer />
       </div>
     </main>
