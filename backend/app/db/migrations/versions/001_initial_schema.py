@@ -17,9 +17,6 @@ depends_on: Union[str, Sequence[str], None] = None
 
 
 def upgrade() -> None:
-    # Enable pgvector extension
-    op.execute("CREATE EXTENSION IF NOT EXISTS vector")
-
     # ── farmers ──────────────────────────────────────────────────────────────
     op.create_table(
         "farmers",
@@ -148,4 +145,3 @@ def downgrade() -> None:
     op.drop_table("alerts")
     op.drop_table("crops")
     op.drop_table("farmers")
-    op.execute("DROP EXTENSION IF EXISTS vector")
