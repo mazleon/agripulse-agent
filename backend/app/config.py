@@ -20,8 +20,8 @@ class Settings(BaseSettings):
 
     # ── LLM ───────────────────────────────────────────────────────────────────
     ANTHROPIC_API_KEY: str = ""
-    ANTHROPIC_MODEL_FAST: str = "claude-haiku-4-5-20251001"    # intent classification, simple tasks
-    ANTHROPIC_MODEL_MAIN: str = "claude-sonnet-4-6"            # synthesis, complex reasoning
+    ANTHROPIC_MODEL_FAST: str = "claude-haiku-4-5-20251001"  # intent classification, simple tasks
+    ANTHROPIC_MODEL_MAIN: str = "claude-sonnet-4-6"  # synthesis, complex reasoning
 
     # ── Weather ───────────────────────────────────────────────────────────────
     OPENWEATHERMAP_API_KEY: str = ""
@@ -58,6 +58,7 @@ class Settings(BaseSettings):
     def parse_cors(cls, v: str | list) -> list[str]:
         if isinstance(v, str):
             import json
+
             return json.loads(v)
         return v
 

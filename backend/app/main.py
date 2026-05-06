@@ -32,6 +32,7 @@ async def lifespan(app: FastAPI) -> AsyncGenerator[None, None]:
     # LangSmith tracing
     if settings.LANGSMITH_API_KEY:
         import os
+
         os.environ["LANGCHAIN_TRACING_V2"] = "true"
         os.environ["LANGCHAIN_API_KEY"] = settings.LANGSMITH_API_KEY
         os.environ["LANGCHAIN_PROJECT"] = settings.LANGSMITH_PROJECT

@@ -19,7 +19,9 @@ class Booking(Base):
     expert_type: Mapped[str] = mapped_column(String(50), nullable=False)  # agri_specialist / vet
     expert_phone: Mapped[str | None] = mapped_column(String(20))
     slot_datetime: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=False)
-    status: Mapped[str] = mapped_column(String(20), default="pending")   # pending / confirmed / cancelled
+    status: Mapped[str] = mapped_column(
+        String(20), default="pending"
+    )  # pending / confirmed / cancelled
     notes: Mapped[str | None] = mapped_column(Text)
     confirmation_sent: Mapped[bool] = mapped_column(default=False)
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())

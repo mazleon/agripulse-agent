@@ -15,8 +15,12 @@ class Alert(Base):
     farmer_id: Mapped[uuid.UUID | None] = mapped_column(
         UUID(as_uuid=True), ForeignKey("farmers.id", ondelete="SET NULL"), nullable=True, index=True
     )
-    alert_type: Mapped[str] = mapped_column(String(50), nullable=False)   # weather / pest / fertilizer
-    severity: Mapped[str] = mapped_column(String(20), default="medium")   # low / medium / high / critical
+    alert_type: Mapped[str] = mapped_column(
+        String(50), nullable=False
+    )  # weather / pest / fertilizer
+    severity: Mapped[str] = mapped_column(
+        String(20), default="medium"
+    )  # low / medium / high / critical
     title_bn: Mapped[str] = mapped_column(String(500), nullable=False)
     body_bn: Mapped[str] = mapped_column(Text, nullable=False)
     affected_crop: Mapped[str | None] = mapped_column(String(100))

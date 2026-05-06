@@ -14,7 +14,7 @@ class Farmer(Base):
     id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
     phone: Mapped[str] = mapped_column(String(20), unique=True, nullable=False, index=True)
     name: Mapped[str] = mapped_column(String(200), nullable=False)
-    region: Mapped[str | None] = mapped_column(String(100))        # district name
+    region: Mapped[str | None] = mapped_column(String(100))  # district name
     lat: Mapped[float | None] = mapped_column(Float)
     lon: Mapped[float | None] = mapped_column(Float)
     language_preference: Mapped[str] = mapped_column(String(5), default="bn")
@@ -27,4 +27,6 @@ class Farmer(Base):
 
     crops: Mapped[list["Crop"]] = relationship("Crop", back_populates="farmer", lazy="selectin")  # noqa: F821
     alerts: Mapped[list["Alert"]] = relationship("Alert", back_populates="farmer", lazy="selectin")  # noqa: F821
-    bookings: Mapped[list["Booking"]] = relationship("Booking", back_populates="farmer", lazy="selectin")  # noqa: F821
+    bookings: Mapped[list["Booking"]] = relationship(
+        "Booking", back_populates="farmer", lazy="selectin"
+    )  # noqa: F821
