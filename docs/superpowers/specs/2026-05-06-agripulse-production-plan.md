@@ -362,6 +362,8 @@ The push is blocked if any check fails. Fix locally, then push again.
 - Require 1 reviewer approval
 - Dismiss stale reviews on new commits
 
+> 📋 **Setup Instructions:** See `docs/GITHUB_POLICY_SETUP.md` for step-by-step GitHub configuration (branch protection, security scanning, collaborator access, labels). Branch protection requires GitHub Pro for private repos — free for public repos.
+
 ---
 
 ## 9. Graphify Integration
