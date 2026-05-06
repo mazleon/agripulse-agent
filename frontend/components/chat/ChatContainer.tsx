@@ -75,6 +75,12 @@ export function ChatContainer() {
   const bottomRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
+    return () => {
+      if (imagePreview) URL.revokeObjectURL(imagePreview);
+    };
+  }, [imagePreview]);
+
+  useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages, loading]);
 

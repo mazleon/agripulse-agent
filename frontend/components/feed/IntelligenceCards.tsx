@@ -1,7 +1,11 @@
 "use client";
 import { CloudRain, TrendingUp } from "lucide-react";
 import { motion } from "framer-motion";
-import { LineChart, Line, ResponsiveContainer } from "recharts";
+import dynamic from "next/dynamic";
+
+const LineChart = dynamic(() => import("recharts").then((mod) => mod.LineChart), { ssr: false });
+const Line = dynamic(() => import("recharts").then((mod) => mod.Line), { ssr: false });
+const ResponsiveContainer = dynamic(() => import("recharts").then((mod) => mod.ResponsiveContainer), { ssr: false });
 
 const paddyData = [
   { day: "1", price: 60 },
@@ -14,7 +18,6 @@ const paddyData = [
 export function IntelligenceCards() {
   return (
     <div className="grid grid-cols-2 gap-4 mb-6">
-      {/* Market Card */}
       <motion.div 
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
@@ -34,7 +37,6 @@ export function IntelligenceCards() {
           <p className="text-2xl font-bold text-white mb-1">৳৬৫ <span className="text-sm text-neon-green font-normal tracking-wider">+২</span></p>
           <p className="text-[10px] text-agri-300">চাল (ধান) • নিকটতম হাট</p>
         </div>
-        {/* Sparkline */}
         <div className="h-10 mt-2 w-full relative z-10 opacity-70">
           <ResponsiveContainer width="100%" height="100%">
             <LineChart data={paddyData}>
@@ -44,7 +46,6 @@ export function IntelligenceCards() {
         </div>
       </motion.div>
 
-      {/* Weather Card */}
       <motion.div 
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
