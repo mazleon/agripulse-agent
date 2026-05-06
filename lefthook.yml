@@ -1,0 +1,49 @@
+# lefthook.yml — Git hooks for AgriPulse
+# Install: npx lefthook install  (or brew install evilmartians/tap/lefthook)
+# Docs: https://github.com/evilmartians/lefthook
+
+pre-push:
+  parallel: true
+  commands:
+    # ── Python Backend ────────────────────────────────────────────────────────
+    backend-ruff-check:
+      root: backend/
+      glob: "*.py"
+      run: uv run ruff check {push_files}
+      fail_text: "Python lint errors found. Run 'cd backend && uv run ruff check --fix .' to auto-fix."
+
+    backend-ruff-format:
+      root: backend/
+      glob: "*.py"
+      run: uv run ruff format --check {push_files}
+      fail_text: "Python format errors found. Run 'cd backend && uv run ruff format .' to fix."
+
+    backend-mypy:
+      root: backend/
+      glob: "*.py"
+      run: uv run mypy {push_files}
+      fail_text: "Type errors found. Fix mypy issues before pushing."
+
+    # ── Frontend ──────────────────────────────────────────────────────────────
+    frontend-eslint:
+      root: frontend/
+      glob: "*.{ts,tsx,js,jsx}"
+      run: npx eslint {push_files}
+      fail_text: "ESLint errors found. Run 'cd frontend && npx eslint --fix {push_files}' to auto-fix."
+
+    frontend-prettier-check:
+      root: frontend/
+      glob: "*.{ts,tsx,js,jsx,json,css,md}"
+      run: npx prettier --check {push_files}
+      fail_text: "Prettier format errors found. Run 'cd frontend && npx prettier --write {push_files}' to fix."
+
+    frontend-tsc:
+      root: frontend/
+      run: npx tsc --noEmit
+      fail_text: "TypeScript type errors found. Fix tsc issues before pushing."
+
+commit-msg:
+  commands:
+    conventional-commit:
+      run: 'head -1 {1} | grep -qE "^(feat|fix|refactor|chore|docs|test|ci|security)(\(.+\))?: .+"'
+      fail_text: "Commit message must follow Conventional Commits: feat|fix|refactor|chore|docs|test|ci|security: description"
