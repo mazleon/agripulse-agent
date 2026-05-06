@@ -38,11 +38,13 @@ export function IntelligenceCards() {
           <p className="text-[10px] text-agri-300">চাল (ধান) • নিকটতম হাট</p>
         </div>
         <div className="h-10 mt-2 w-full relative z-10 opacity-70">
-          <ResponsiveContainer width="100%" height="100%">
-            <LineChart data={paddyData}>
-              <Line type="monotone" dataKey="price" stroke="#39ff14" strokeWidth={2} dot={false} />
-            </LineChart>
-          </ResponsiveContainer>
+          <div className="w-full h-full min-w-[40px] min-h-[40px]">
+            <ResponsiveContainer width="100%" height="100%">
+              <LineChart data={paddyData}>
+                <Line type="monotone" dataKey="price" stroke="#39ff14" strokeWidth={2} dot={false} />
+              </LineChart>
+            </ResponsiveContainer>
+          </div>
         </div>
       </motion.div>
 
