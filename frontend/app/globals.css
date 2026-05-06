@@ -1,0 +1,9 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --agri-green: #2d6a4f;
+  --agri-light: #b7e4c7;
+  --agri-gold: #d4a017;
+}
