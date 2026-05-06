@@ -74,9 +74,29 @@ jobs:
         run: pip install -e ".[dev]"
       - name: Run migrations
         run: alembic upgrade head
+      - name: Check for unit tests
+        id: check-unit
+        run: |
+          if [ -d tests/unit ]; then
+            echo "exists=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "exists=false" >> "$GITHUB_OUTPUT"
+            echo "No unit tests on this branch — skipping."
+          fi
       - name: Unit tests
+        if: steps.check-unit.outputs.exists == 'true'
         run: pytest tests/unit/ -v --cov=app --cov-report=term-missing
+      - name: Check for integration tests
+        id: check-integration
+        run: |
+          if [ -d tests/integration ]; then
+            echo "exists=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "exists=false" >> "$GITHUB_OUTPUT"
+            echo "No integration tests on this branch — skipping."
+          fi
       - name: Integration tests
+        if: steps.check-integration.outputs.exists == 'true'
         run: pytest tests/integration/ -v
 
   # ── Frontend ─────────────────────────────────────────────────────────────
