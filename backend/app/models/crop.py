@@ -16,12 +16,12 @@ class Crop(Base):
         UUID(as_uuid=True), ForeignKey("farmers.id", ondelete="CASCADE"), nullable=False, index=True
     )
     crop_type: Mapped[str] = mapped_column(String(100), nullable=False)  # rice, wheat, jute...
-    crop_name_bn: Mapped[str | None] = mapped_column(String(200))        # Bangla name
+    crop_name_bn: Mapped[str | None] = mapped_column(String(200))  # Bangla name
     land_size_acres: Mapped[float | None] = mapped_column(Float)
-    soil_type: Mapped[str | None] = mapped_column(String(50))            # clay, loam, sandy
+    soil_type: Mapped[str | None] = mapped_column(String(50))  # clay, loam, sandy
     planting_date: Mapped[date | None] = mapped_column(Date)
     expected_harvest_date: Mapped[date | None] = mapped_column(Date)
-    status: Mapped[str] = mapped_column(String(20), default="active")   # active / harvested / failed
+    status: Mapped[str] = mapped_column(String(20), default="active")  # active / harvested / failed
     notes: Mapped[str | None] = mapped_column(String(1000))
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
 
