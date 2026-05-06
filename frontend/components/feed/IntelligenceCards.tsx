@@ -3,9 +3,17 @@ import { CloudRain, TrendingUp } from "lucide-react";
 import { motion } from "framer-motion";
 import dynamic from "next/dynamic";
 
-const LineChart = dynamic(() => import("recharts").then((mod) => mod.LineChart), { ssr: false });
-const Line = dynamic(() => import("recharts").then((mod) => mod.Line), { ssr: false });
-const ResponsiveContainer = dynamic(() => import("recharts").then((mod) => mod.ResponsiveContainer), { ssr: false });
+const LineChart = dynamic(
+  () => import("recharts").then((mod) => mod.LineChart),
+  { ssr: false },
+);
+const Line = dynamic(() => import("recharts").then((mod) => mod.Line), {
+  ssr: false,
+});
+const ResponsiveContainer = dynamic(
+  () => import("recharts").then((mod) => mod.ResponsiveContainer),
+  { ssr: false },
+);
 
 const paddyData = [
   { day: "1", price: 60 },
@@ -18,7 +26,7 @@ const paddyData = [
 export function IntelligenceCards() {
   return (
     <div className="grid grid-cols-2 gap-4 mb-6">
-      <motion.div 
+      <motion.div
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.1 }}
@@ -34,21 +42,32 @@ export function IntelligenceCards() {
           <h3 className="text-sm font-semibold text-agri-100">বাজার দর</h3>
         </div>
         <div className="relative z-10">
-          <p className="text-2xl font-bold text-white mb-1">৳৬৫ <span className="text-sm text-neon-green font-normal tracking-wider">+২</span></p>
+          <p className="text-2xl font-bold text-white mb-1">
+            ৳৬৫{" "}
+            <span className="text-sm text-neon-green font-normal tracking-wider">
+              +২
+            </span>
+          </p>
           <p className="text-[10px] text-agri-300">চাল (ধান) • নিকটতম হাট</p>
         </div>
         <div className="h-10 mt-2 w-full relative z-10 opacity-70">
           <div className="w-full h-full min-w-[40px] min-h-[40px]">
             <ResponsiveContainer width="100%" height="100%">
               <LineChart data={paddyData}>
-                <Line type="monotone" dataKey="price" stroke="#39ff14" strokeWidth={2} dot={false} />
+                <Line
+                  type="monotone"
+                  dataKey="price"
+                  stroke="#39ff14"
+                  strokeWidth={2}
+                  dot={false}
+                />
               </LineChart>
             </ResponsiveContainer>
           </div>
         </div>
       </motion.div>
 
-      <motion.div 
+      <motion.div
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.2 }}
@@ -64,10 +83,13 @@ export function IntelligenceCards() {
           <h3 className="text-sm font-semibold text-agri-100">আবহাওয়া</h3>
         </div>
         <div className="relative z-10">
-          <p className="text-2xl font-bold text-white mb-1">বৃষ্টি <span className="text-sm text-neon-blue font-normal">২:০০ PM</span></p>
+          <p className="text-2xl font-bold text-white mb-1">
+            বৃষ্টি{" "}
+            <span className="text-sm text-neon-blue font-normal">২:০০ PM</span>
+          </p>
           <p className="text-[10px] text-agri-300">আজ বিকেলে ভারী বৃষ্টিপাত</p>
         </div>
-        
+
         <button className="mt-3 w-full bg-neon-blue/10 hover:bg-neon-blue/20 border border-neon-blue/30 text-neon-blue text-xs py-1.5 rounded-lg transition-colors font-medium">
           ফসল নিরাপদে রাখুন?
         </button>

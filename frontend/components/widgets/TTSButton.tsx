@@ -24,7 +24,7 @@ export function TTSButton({ text }: { text: string }) {
 
     const utterance = new SpeechSynthesisUtterance(text);
     utterance.lang = "bn-BD"; // Bengali
-    
+
     utterance.onend = () => setIsPlaying(false);
     utterance.onerror = () => setIsPlaying(false);
 
@@ -38,7 +38,11 @@ export function TTSButton({ text }: { text: string }) {
       className="p-1.5 bg-agri-700 hover:bg-agri-600 rounded-full text-neon-green transition-colors"
       aria-label="Play text aloud"
     >
-      {isPlaying ? <Square fill="currentColor" size={14} /> : <Play fill="currentColor" size={14} />}
+      {isPlaying ? (
+        <Square fill="currentColor" size={14} />
+      ) : (
+        <Play fill="currentColor" size={14} />
+      )}
     </button>
   );
 }

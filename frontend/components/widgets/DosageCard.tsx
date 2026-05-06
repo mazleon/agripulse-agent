@@ -30,7 +30,9 @@ export function DosageCard({ data }: { data: DosageData }) {
           <Beaker size={16} />
           <span>সার ও ঔষধের মাত্রা</span>
         </div>
-        <TTSButton text={`আপনার জন্য প্রস্তাবিত মাত্রা হলো ${displayAmount} ${displayUnit} প্রতি ${unitMode === "bigha" ? "বিঘা" : "একর"}`} />
+        <TTSButton
+          text={`আপনার জন্য প্রস্তাবিত মাত্রা হলো ${displayAmount} ${displayUnit} প্রতি ${unitMode === "bigha" ? "বিঘা" : "একর"}`}
+        />
       </div>
 
       <div className="p-4">
@@ -43,15 +45,21 @@ export function DosageCard({ data }: { data: DosageData }) {
 
         <div className="flex items-end justify-between mb-6">
           <div>
-            <p className="text-agri-300 text-xs uppercase mb-1">উপাদান (Ingredient)</p>
+            <p className="text-agri-300 text-xs uppercase mb-1">
+              উপাদান (Ingredient)
+            </p>
             <p className="text-xl font-bold text-white">{data.ingredient}</p>
           </div>
           <div className="text-right">
             <div className="flex items-baseline justify-end gap-1">
-              <span className="text-4xl font-bold text-neon-green">{displayAmount}</span>
+              <span className="text-4xl font-bold text-neon-green">
+                {displayAmount}
+              </span>
               <span className="text-agri-300">{displayUnit}</span>
             </div>
-            <p className="text-[10px] text-agri-400 mt-1">/ প্রতি {unitMode === "bigha" ? "বিঘা" : "একর"}</p>
+            <p className="text-[10px] text-agri-400 mt-1">
+              / প্রতি {unitMode === "bigha" ? "বিঘা" : "একর"}
+            </p>
           </div>
         </div>
 
@@ -83,7 +91,9 @@ export function DosageCard({ data }: { data: DosageData }) {
             <FlaskConical size={20} />
           </div>
           <div>
-            <p className="text-[10px] text-agri-400 uppercase">পানির অনুপাত (Mix Ratio)</p>
+            <p className="text-[10px] text-agri-400 uppercase">
+              পানির অনুপাত (Mix Ratio)
+            </p>
             <p className="text-sm font-medium text-white">{data.water_ratio}</p>
           </div>
         </div>

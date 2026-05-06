@@ -1,7 +1,7 @@
 {
-  "name": "Krishi-Shakti v2.0",
-  "short_name": "কৃষি-শক্তি",
-  "description": "কৃষি-শক্তি — আপনার স্মার্ট কৃষি সহকারী",
+  "name": "Agripulse AI",
+  "short_name": "Agripulse AI",
+  "description": "Agripulse AI — Your Smart Agricultural Assistant",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#050a06",

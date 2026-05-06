@@ -9,7 +9,11 @@ interface CameraOverlayProps {
   scanResult?: string;
 }
 
-export function CameraOverlay({ imagePreview, onClose, scanResult }: CameraOverlayProps) {
+export function CameraOverlay({
+  imagePreview,
+  onClose,
+  scanResult,
+}: CameraOverlayProps) {
   return (
     <div className="fixed inset-0 z-50 bg-black flex flex-col">
       {/* Top Bar */}
@@ -18,18 +22,25 @@ export function CameraOverlay({ imagePreview, onClose, scanResult }: CameraOverl
           <span className="w-2 h-2 rounded-full bg-neon-green animate-pulse"></span>
           SCANNING
         </div>
-        <button onClick={onClose} className="p-2 bg-black/50 rounded-full text-white hover:bg-white/20 backdrop-blur-md">
+        <button
+          onClick={onClose}
+          className="p-2 bg-black/50 rounded-full text-white hover:bg-white/20 backdrop-blur-md"
+        >
           <X size={20} />
         </button>
       </div>
 
       {/* Camera Image */}
       <div className="relative flex-1 w-full h-full">
-        <img src={imagePreview} alt="Camera view" className="w-full h-full object-cover" />
-        
+        <img
+          src={imagePreview}
+          alt="Camera view"
+          className="w-full h-full object-cover"
+        />
+
         {/* Cyberpunk Grid Overlay */}
         <div className="absolute inset-0 bg-[linear-gradient(rgba(57,255,20,0.1)_1px,transparent_1px),linear-gradient(90deg,rgba(57,255,20,0.1)_1px,transparent_1px)] bg-[size:40px_40px] opacity-30 pointer-events-none mix-blend-screen" />
-        
+
         {/* Scanning Line Animation */}
         <motion.div
           animate={{ top: ["0%", "100%", "0%"] }}
@@ -39,7 +50,7 @@ export function CameraOverlay({ imagePreview, onClose, scanResult }: CameraOverl
 
         {/* AR Tag */}
         {scanResult && (
-          <motion.div 
+          <motion.div
             initial={{ scale: 0, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
             transition={{ type: "spring", stiffness: 200, damping: 15 }}
@@ -54,7 +65,9 @@ export function CameraOverlay({ imagePreview, onClose, scanResult }: CameraOverl
 
       {/* Bottom Bar */}
       <div className="absolute bottom-0 inset-x-0 p-6 bg-gradient-to-t from-black via-black/80 to-transparent flex justify-center z-20">
-        <p className="text-agri-300 text-xs font-mono">LITE-AGENT VISION V2.0 ACTIVE</p>
+        <p className="text-agri-300 text-xs font-mono">
+          LITE-AGENT VISION V2.0 ACTIVE
+        </p>
       </div>
     </div>
   );

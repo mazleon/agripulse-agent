@@ -1,4 +1,8 @@
-export type WidgetType = "dosage_card" | "vision_diagnosis" | "market_price" | "weather_risk";
+export type WidgetType =
+  | "dosage_card"
+  | "vision_diagnosis"
+  | "market_price"
+  | "weather_risk";
 
 export interface Message {
   id: string;

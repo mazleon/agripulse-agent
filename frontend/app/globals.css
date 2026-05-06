@@ -12,9 +12,17 @@
     color: var(--foreground);
     background: var(--background);
     /* Subtle neon gradient background for that Cyberpunk rural feel */
-    background-image: 
-      radial-gradient(circle at 15% 50%, rgba(57, 255, 20, 0.03), transparent 25%),
-      radial-gradient(circle at 85% 30%, rgba(0, 243, 255, 0.03), transparent 25%);
+    background-image:
+      radial-gradient(
+        circle at 15% 50%,
+        rgba(57, 255, 20, 0.03),
+        transparent 25%
+      ),
+      radial-gradient(
+        circle at 85% 30%,
+        rgba(0, 243, 255, 0.03),
+        transparent 25%
+      );
     background-attachment: fixed;
     /* Dark mode by default */
     color-scheme: dark;
