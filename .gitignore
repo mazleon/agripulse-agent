@@ -1,0 +1,68 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+.Python
+*.egg
+*.egg-info/
+dist/
+build/
+.eggs/
+.venv/
+venv/
+env/
+.env
+.env.*
+!.env.example
+
+# Alembic
+backend/app/db/migrations/versions/*.pyc
+
+# Testing
+.pytest_cache/
+.coverage
+htmlcov/
+.tox/
+
+# MyPy
+.mypy_cache/
+*.pyi
+
+# Ruff
+.ruff_cache/
+
+# Node / Frontend
+node_modules/
+.next/
+out/
+frontend/.env
+frontend/.env.*
+!frontend/.env.example
+
+# Docker
+.dockerignore
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+.DS_Store
+
+# Logs
+*.log
+logs/
+
+# Uploads / temp
+uploads/
+tmp/
+
+# Graphify output (regenerated, not committed)
+graphify-out/
+
+# LangSmith local traces
+.langchain/
+
+# Sentry
+.sentryclirc
