@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import uuid
 from datetime import datetime
 
@@ -22,8 +24,8 @@ class Feedback(Base):
     agent_used: Mapped[str | None] = mapped_column(String(50))  # knowledge / vision / weather ...
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
 
-    farmer: Mapped["Farmer | None"] = relationship("Farmer")  # noqa: F821
-    correction_record: Mapped["Correction | None"] = relationship(  # noqa: F821
+    farmer: Mapped[Farmer | None] = relationship("Farmer")  # noqa: F821
+    correction_record: Mapped[Correction | None] = relationship(  # noqa: F821
         "Correction", back_populates="feedback", uselist=False
     )
 
@@ -43,4 +45,4 @@ class Correction(Base):
     is_processed: Mapped[bool] = mapped_column(Boolean, default=False)  # for prompt-tuning pipeline
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
 
-    feedback: Mapped["Feedback"] = relationship("Feedback", back_populates="correction_record")
+    feedback: Mapped[Feedback] = relationship("Feedback", back_populates="correction_record")

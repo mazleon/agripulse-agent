@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import uuid
 from datetime import datetime
 
@@ -29,4 +31,4 @@ class Alert(Base):
     is_read: Mapped[bool] = mapped_column(Boolean, default=False)
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
 
-    farmer: Mapped["Farmer | None"] = relationship("Farmer", back_populates="alerts")  # noqa: F821
+    farmer: Mapped[Farmer | None] = relationship("Farmer", back_populates="alerts")  # noqa: F821

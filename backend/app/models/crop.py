@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import uuid
 from datetime import date, datetime
 
@@ -25,4 +27,4 @@ class Crop(Base):
     notes: Mapped[str | None] = mapped_column(String(1000))
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
 
-    farmer: Mapped["Farmer"] = relationship("Farmer", back_populates="crops")  # noqa: F821
+    farmer: Mapped[Farmer] = relationship("Farmer", back_populates="crops")  # noqa: F821

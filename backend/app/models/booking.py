@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import uuid
 from datetime import datetime
 
@@ -29,4 +31,4 @@ class Booking(Base):
         DateTime(timezone=True), server_default=func.now(), onupdate=func.now()
     )
 
-    farmer: Mapped["Farmer"] = relationship("Farmer", back_populates="bookings")  # noqa: F821
+    farmer: Mapped[Farmer] = relationship("Farmer", back_populates="bookings")  # noqa: F821

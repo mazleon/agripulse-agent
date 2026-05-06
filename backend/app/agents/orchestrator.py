@@ -74,7 +74,7 @@ async def classify_intent(state: AgriState) -> dict:
 
 def route(state: AgriState) -> list[str]:
     """Return the list of nodes to run next (parallel fan-out)."""
-    intent = state.get("intent", "general")
+    intent = state.get("intent") or "general"
     routes = {
         "pest_detection": ["vision_node", "knowledge_node", "sql_node"],
         "livestock_detection": ["vision_node", "knowledge_node"],

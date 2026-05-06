@@ -28,7 +28,7 @@ def get_vector_store() -> PGVectorStore:
         database="agripulse",
         host="localhost",
         password="agripulse",
-        port=5432,
+        port="5432",
         user="agripulse",
         table_name="agripulse_rag_embeddings",
         embed_dim=1024,  # bge-m3 dimension

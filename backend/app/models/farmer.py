@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import uuid
 from datetime import datetime
 
@@ -25,8 +27,8 @@ class Farmer(Base):
         DateTime(timezone=True), server_default=func.now(), onupdate=func.now()
     )
 
-    crops: Mapped[list["Crop"]] = relationship("Crop", back_populates="farmer", lazy="selectin")  # noqa: F821
-    alerts: Mapped[list["Alert"]] = relationship("Alert", back_populates="farmer", lazy="selectin")  # noqa: F821
-    bookings: Mapped[list["Booking"]] = relationship(  # noqa: F821
+    crops: Mapped[list[Crop]] = relationship("Crop", back_populates="farmer", lazy="selectin")  # noqa: F821
+    alerts: Mapped[list[Alert]] = relationship("Alert", back_populates="farmer", lazy="selectin")  # noqa: F821
+    bookings: Mapped[list[Booking]] = relationship(  # noqa: F821
         "Booking", back_populates="farmer", lazy="selectin"
     )

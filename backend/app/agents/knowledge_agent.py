@@ -16,12 +16,12 @@ async def knowledge_node(state: AgriState) -> dict:
 
         # Build a context-enriched query
         query_parts = [state["user_message"]]
-        if state.get("sql_result"):
-            profile = state["sql_result"]
-            if profile.get("crop_type"):
-                query_parts.append(f"crop: {profile['crop_type']}")
-            if profile.get("region"):
-                query_parts.append(f"region: {profile['region']}")
+        sql_result = state.get("sql_result")
+        if sql_result:
+            if sql_result.get("crop_type"):
+                query_parts.append(f"crop: {sql_result['crop_type']}")
+            if sql_result.get("region"):
+                query_parts.append(f"region: {sql_result['region']}")
 
         query = " | ".join(query_parts)
         response = engine.query(query)

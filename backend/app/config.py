@@ -104,7 +104,7 @@ def get_llm(fast: bool = False):
         from langchain_openai import ChatOpenAI
 
         model = s.OPENAI_MODEL_FAST if fast else s.OPENAI_MODEL_MAIN
-        return ChatOpenAI(model=model, api_key=s.OPENAI_API_KEY)
+        return ChatOpenAI(model=model, api_key=s.OPENAI_API_KEY)  # type: ignore[arg-type]
     elif s.LLM_PROVIDER == "google":
         from langchain_google_genai import ChatGoogleGenerativeAI
 
@@ -116,11 +116,11 @@ def get_llm(fast: bool = False):
         model = s.OPENROUTER_MODEL_FAST if fast else s.OPENROUTER_MODEL_MAIN
         return ChatOpenAI(
             model=model,
-            api_key=s.OPENROUTER_API_KEY,
+            api_key=s.OPENROUTER_API_KEY,  # type: ignore[arg-type]
             base_url="https://openrouter.ai/api/v1",
         )
     else:  # anthropic (default)
         from langchain_anthropic import ChatAnthropic
 
         model = s.ANTHROPIC_MODEL_FAST if fast else s.ANTHROPIC_MODEL_MAIN
-        return ChatAnthropic(model=model, api_key=s.ANTHROPIC_API_KEY)
+        return ChatAnthropic(model=model, api_key=s.ANTHROPIC_API_KEY)  # type: ignore[call-arg,arg-type]
