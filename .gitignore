@@ -66,3 +66,11 @@ graphify-out/
 
 # Sentry
 .sentryclirc
+
+# .agent, .opencode
+.agents
+.opencode
+.claude
+
+# folder name others
+others/*
