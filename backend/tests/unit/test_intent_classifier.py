@@ -1,4 +1,5 @@
 """Unit tests for intent classification logic."""
+
 from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest

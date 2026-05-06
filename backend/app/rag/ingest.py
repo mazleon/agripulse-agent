@@ -5,6 +5,7 @@ Usage:
     python -m app.rag.ingest              # ingest all docs in rag/docs/
     python -m app.rag.ingest --incoming   # only ingest rag/docs/incoming/ (weekly refresh)
 """
+
 import argparse
 import asyncio
 import logging

@@ -18,6 +18,7 @@ Graph flow:
        ↓
     END
 """
+
 import logging
 from typing import Literal
 
@@ -46,12 +47,17 @@ Intent = Literal[
 ]
 
 VALID_INTENTS = {
-    "pest_detection", "livestock_detection", "weather_query",
-    "irrigation_advice", "booking", "general",
+    "pest_detection",
+    "livestock_detection",
+    "weather_query",
+    "irrigation_advice",
+    "booking",
+    "general",
 }
 
 
 # ── Node: classify intent ─────────────────────────────────────────────────────
+
 
 async def classify_intent(state: AgriState) -> dict:
     llm = get_llm(fast=True)
@@ -65,21 +71,23 @@ async def classify_intent(state: AgriState) -> dict:
 
 # ── Router ────────────────────────────────────────────────────────────────────
 
+
 def route(state: AgriState) -> list[str]:
     """Return the list of nodes to run next (parallel fan-out)."""
     intent = state.get("intent", "general")
     routes = {
-        "pest_detection":     ["vision_node", "knowledge_node", "sql_node"],
+        "pest_detection": ["vision_node", "knowledge_node", "sql_node"],
         "livestock_detection": ["vision_node", "knowledge_node"],
-        "weather_query":      ["weather_node", "sql_node"],
-        "irrigation_advice":  ["weather_node", "knowledge_node", "sql_node"],
-        "booking":            ["action_node"],
-        "general":            ["knowledge_node", "sql_node"],
+        "weather_query": ["weather_node", "sql_node"],
+        "irrigation_advice": ["weather_node", "knowledge_node", "sql_node"],
+        "booking": ["action_node"],
+        "general": ["knowledge_node", "sql_node"],
     }
     return routes.get(intent, ["knowledge_node"])
 
 
 # ── Node: synthesize response ─────────────────────────────────────────────────
+
 
 async def synthesize(state: AgriState) -> dict:
     llm = get_llm(fast=False)
@@ -103,12 +111,14 @@ async def synthesize(state: AgriState) -> dict:
     raw_text = response.content.strip()
 
     agents_used = [
-        k for k, v in {
+        k
+        for k, v in {
             "knowledge": state.get("knowledge_result"),
             "vision": state.get("vision_result"),
             "weather": state.get("weather_result"),
             "sql": state.get("sql_result"),
-        }.items() if v
+        }.items()
+        if v
     ]
 
     return {
@@ -120,12 +130,14 @@ async def synthesize(state: AgriState) -> dict:
 
 # ── Node: safety check ────────────────────────────────────────────────────────
 
+
 async def safety_check(state: AgriState) -> dict:
     safe_response = await apply_safety(state["final_response"] or "")
     return {"final_response": safe_response}
 
 
 # ── Placeholder nodes (implemented in Phase 2–3) ──────────────────────────────
+
 
 async def vision_node(state: AgriState) -> dict:
     """Placeholder — implemented in Phase 2."""
@@ -143,6 +155,7 @@ async def action_node(state: AgriState) -> dict:
 
 
 # ── Build the graph ───────────────────────────────────────────────────────────
+
 
 def build_graph() -> StateGraph:
     g = StateGraph(AgriState)

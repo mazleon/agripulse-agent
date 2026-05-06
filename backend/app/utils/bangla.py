@@ -1,4 +1,5 @@
 """Bangla language utilities."""
+
 import re
 
 

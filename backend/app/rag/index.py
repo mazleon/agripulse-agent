@@ -1,4 +1,5 @@
 """Shared LlamaIndex query engine — used by KnowledgeAgent."""
+
 from functools import lru_cache
 
 from llama_index.core import VectorStoreIndex
@@ -14,7 +15,9 @@ EMBED_MODEL = FastEmbedEmbedding(model_name="BAAI/bge-m3")
 def get_query_engine():
     vector_store = PGVectorStore.from_params(
         database="agripulse",
-        host=settings.DATABASE_URL.split("@")[1].split(":")[0] if "@" in settings.DATABASE_URL else "localhost",
+        host=settings.DATABASE_URL.split("@")[1].split(":")[0]
+        if "@" in settings.DATABASE_URL
+        else "localhost",
         password="agripulse",
         port=5432,
         user="agripulse",

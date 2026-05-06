@@ -1,4 +1,5 @@
 """Integration test for health endpoint."""
+
 import pytest
 from httpx import ASGITransport, AsyncClient
 

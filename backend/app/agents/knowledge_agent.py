@@ -1,4 +1,5 @@
 """Knowledge Agent — LlamaIndex RAG node for the LangGraph pipeline."""
+
 import logging
 
 from app.agents.state import AgriState
@@ -10,6 +11,7 @@ async def knowledge_node(state: AgriState) -> dict:
     """Query the RAG index and return top passages."""
     try:
         from app.rag.index import get_query_engine
+
         engine = get_query_engine()
 
         # Build a context-enriched query

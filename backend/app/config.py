@@ -24,8 +24,8 @@ class Settings(BaseSettings):
 
     # Anthropic
     ANTHROPIC_API_KEY: str = ""
-    ANTHROPIC_MODEL_FAST: str = "claude-haiku-4-5-20251001"    # intent classification, simple tasks
-    ANTHROPIC_MODEL_MAIN: str = "claude-sonnet-4-6"            # synthesis, complex reasoning
+    ANTHROPIC_MODEL_FAST: str = "claude-haiku-4-5-20251001"  # intent classification, simple tasks
+    ANTHROPIC_MODEL_MAIN: str = "claude-sonnet-4-6"  # synthesis, complex reasoning
 
     # OpenAI (fallback / alternative)
     OPENAI_API_KEY: str = ""
@@ -76,6 +76,7 @@ class Settings(BaseSettings):
     def parse_cors(cls, v: str | list) -> list[str]:
         if isinstance(v, str):
             import json
+
             return json.loads(v)
         return v
 
@@ -101,14 +102,17 @@ def get_llm(fast: bool = False):
     s = settings
     if s.LLM_PROVIDER == "openai":
         from langchain_openai import ChatOpenAI
+
         model = s.OPENAI_MODEL_FAST if fast else s.OPENAI_MODEL_MAIN
         return ChatOpenAI(model=model, api_key=s.OPENAI_API_KEY)
     elif s.LLM_PROVIDER == "google":
         from langchain_google_genai import ChatGoogleGenerativeAI
+
         model = s.GOOGLE_MODEL_FAST if fast else s.GOOGLE_MODEL_MAIN
         return ChatGoogleGenerativeAI(model=model, google_api_key=s.GOOGLE_API_KEY)
     elif s.LLM_PROVIDER == "openrouter":
         from langchain_openai import ChatOpenAI
+
         model = s.OPENROUTER_MODEL_FAST if fast else s.OPENROUTER_MODEL_MAIN
         return ChatOpenAI(
             model=model,
@@ -117,5 +121,6 @@ def get_llm(fast: bool = False):
         )
     else:  # anthropic (default)
         from langchain_anthropic import ChatAnthropic
+
         model = s.ANTHROPIC_MODEL_FAST if fast else s.ANTHROPIC_MODEL_MAIN
         return ChatAnthropic(model=model, api_key=s.ANTHROPIC_API_KEY)

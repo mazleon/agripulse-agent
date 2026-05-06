@@ -1,4 +1,5 @@
 """Safety layer — applied to every LLM response before sending to the farmer."""
+
 import logging
 import re
 
@@ -20,9 +21,7 @@ FALLBACK_SUFFIX = (
     "প্রয়োজনে নিকটস্থ কৃষি অফিসে যোগাযোগ করুন।"
 )
 
-LOW_CONFIDENCE_SUFFIX = (
-    "\n\n📸 ছবিটি আরও স্পষ্ট করে তুলুন অথবা নিকটস্থ কৃষি অফিসে যোগাযোগ করুন।"
-)
+LOW_CONFIDENCE_SUFFIX = "\n\n📸 ছবিটি আরও স্পষ্ট করে তুলুন অথবা নিকটস্থ কৃষি অফিসে যোগাযোগ করুন।"
 
 
 def _has_overdose_language(text: str) -> bool:

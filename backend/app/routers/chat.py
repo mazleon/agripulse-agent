@@ -1,4 +1,5 @@
 """Chat router — WebSocket (streaming) + REST fallback."""
+
 import base64
 import json
 import logging
@@ -16,6 +17,7 @@ router = APIRouter()
 
 
 # ── REST: single-turn (useful for testing / simple clients) ──────────────────
+
 
 class ChatRequest(BaseModel):
     message: str
@@ -68,6 +70,7 @@ async def chat_rest(body: ChatRequest) -> ChatResponse:
 
 # ── WebSocket: streaming ──────────────────────────────────────────────────────
 
+
 @router.websocket("/ws/chat")
 async def chat_websocket(
     websocket: WebSocket,
@@ -114,25 +117,30 @@ async def chat_websocket(
             # Stream tokens as they arrive
             async for chunk in graph.astream(initial_state, stream_mode="values"):
                 if chunk.get("final_response"):
-                    await websocket.send_json({
-                        "type": "token",
-                        "content": chunk["final_response"],
-                        "agent_used": chunk.get("agent_used"),
-                        "done": True,
-                    })
+                    await websocket.send_json(
+                        {
+                            "type": "token",
+                            "content": chunk["final_response"],
+                            "agent_used": chunk.get("agent_used"),
+                            "done": True,
+                        }
+                    )
                     await memory.on_assistant_response(chunk["final_response"])
                     break
                 elif chunk.get("intent"):
-                    await websocket.send_json({
-                        "type": "status",
-                        "content": chunk["intent"],
-                    })
+                    await websocket.send_json(
+                        {
+                            "type": "status",
+                            "content": chunk["intent"],
+                        }
+                    )
 
     except WebSocketDisconnect:
         logger.info("WebSocket disconnected: session=%s", session_id)
 
 
 # ── Image upload helper ───────────────────────────────────────────────────────
+
 
 @router.post("/chat/upload-image", tags=["chat"])
 async def upload_image(file: UploadFile) -> dict:

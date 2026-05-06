@@ -1,4 +1,5 @@
 """SQL Agent — fetches structured farmer data for the LangGraph pipeline."""
+
 import logging
 import uuid
 
@@ -15,9 +16,7 @@ logger = logging.getLogger(__name__)
 async def _get_farmer_profile(farmer_id: str) -> dict | None:
     try:
         async with AsyncSessionLocal() as session:
-            result = await session.execute(
-                select(Farmer).where(Farmer.id == uuid.UUID(farmer_id))
-            )
+            result = await session.execute(select(Farmer).where(Farmer.id == uuid.UUID(farmer_id)))
             farmer = result.scalar_one_or_none()
             if not farmer:
                 return None
