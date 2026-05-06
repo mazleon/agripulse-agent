@@ -1,11 +1,17 @@
+from __future__ import annotations
+
 import uuid
 from datetime import datetime
+from typing import TYPE_CHECKING
 
 from sqlalchemy import Boolean, DateTime, ForeignKey, String, Text, func
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.db.database import Base
+
+if TYPE_CHECKING:
+    from app.models.farmer import Farmer
 
 
 class Alert(Base):
@@ -29,4 +35,4 @@ class Alert(Base):
     is_read: Mapped[bool] = mapped_column(Boolean, default=False)
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
 
-    farmer: Mapped["Farmer | None"] = relationship("Farmer", back_populates="alerts")  # noqa: F821
+    farmer: Mapped[Farmer | None] = relationship("Farmer", back_populates="alerts")  # noqa: F821

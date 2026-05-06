@@ -1,11 +1,19 @@
+from __future__ import annotations
+
 import uuid
 from datetime import datetime
+from typing import TYPE_CHECKING
 
 from sqlalchemy import DateTime, Float, String, func
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.db.database import Base
+
+if TYPE_CHECKING:
+    from app.models.alert import Alert
+    from app.models.booking import Booking
+    from app.models.crop import Crop
 
 
 class Farmer(Base):
@@ -25,8 +33,8 @@ class Farmer(Base):
         DateTime(timezone=True), server_default=func.now(), onupdate=func.now()
     )
 
-    crops: Mapped[list["Crop"]] = relationship("Crop", back_populates="farmer", lazy="selectin")  # noqa: F821
-    alerts: Mapped[list["Alert"]] = relationship("Alert", back_populates="farmer", lazy="selectin")  # noqa: F821
-    bookings: Mapped[list["Booking"]] = relationship(  # noqa: F821
+    crops: Mapped[list[Crop]] = relationship("Crop", back_populates="farmer", lazy="selectin")  # noqa: F821
+    alerts: Mapped[list[Alert]] = relationship("Alert", back_populates="farmer", lazy="selectin")  # noqa: F821
+    bookings: Mapped[list[Booking]] = relationship(  # noqa: F821
         "Booking", back_populates="farmer", lazy="selectin"
     )
