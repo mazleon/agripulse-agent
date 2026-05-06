@@ -2,7 +2,6 @@
 const nextConfig = {
   output: "standalone",
   reactStrictMode: false,
-  telemetry: false,
   async rewrites() {
     return [
       {
@@ -11,21 +10,7 @@ const nextConfig = {
       },
     ];
   },
-  compiler: {
-    emotion: false,
-  },
-  webpack: (config, { isServer }) => {
-    if (!isServer) {
-      config.resolve.fallback = {
-        ...config.resolve.fallback,
-        fs: false,
-        net: false,
-        tls: false,
-      };
-      config.stats = "errors-only";
-    }
-    return config;
-  },
+  turbopack: {},
 };
 
 export default nextConfig;
