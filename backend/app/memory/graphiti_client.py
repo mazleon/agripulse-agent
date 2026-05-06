@@ -1,5 +1,5 @@
 import logging
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 
 from graphiti_core import Graphiti
 from graphiti_core.nodes import EpisodeType
@@ -46,7 +46,7 @@ class FarmerMemory:
             episode_body=episode_body,
             source=EpisodeType.message,
             source_description=f"Chat session for farmer {self.farmer_id}",
-            reference_time=datetime.now(timezone.utc),
+            reference_time=datetime.now(UTC),
             group_id=self.farmer_id,
         )
 

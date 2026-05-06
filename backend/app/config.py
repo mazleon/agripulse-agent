@@ -98,8 +98,6 @@ settings = get_settings()
 
 def get_llm(fast: bool = False):
     """Return a LangChain chat model for the configured provider."""
-    from langchain_core.language_models import BaseChatModel
-
     s = settings
     if s.LLM_PROVIDER == "openai":
         from langchain_openai import ChatOpenAI
