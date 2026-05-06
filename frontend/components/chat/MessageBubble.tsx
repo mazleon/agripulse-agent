@@ -31,89 +31,72 @@ export function MessageBubble({ message, onFeedback }: MessageBubbleProps) {
   };
 
   return (
-    <div className={cn("flex w-full animate-fade-in-up", isUser ? "justify-end" : "justify-start")}>
-      <div className={cn("flex max-w-[90%] md:max-w-[85%] gap-3", isUser ? "flex-row-reverse" : "flex-row")}>
-        {/* Avatar */}
-        <div className={cn(
-          "flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center mt-1",
-          isUser ? "bg-neon-green text-agri-dark" : "bg-agri-800 text-neon-blue border border-neon-blue/30"
-        )}>
-          {isUser ? <User size={16} /> : <Bot size={16} />}
+    <div className={cn("flex gap-3 py-4 border-b border-agri-800/50", isUser ? "justify-end" : "justify-start")}>
+      {!isUser && (
+        <div className="flex-shrink-0 w-8 h-8 rounded-full bg-agri-800 flex items-center justify-center text-neon-green">
+          <Bot size={16} />
         </div>
-
-        {/* Content Box */}
-        <div className={cn(
-          "flex flex-col gap-2 rounded-2xl shadow-sm w-full",
-          isUser 
-            ? "bg-agri-700 text-white rounded-tr-sm border border-agri-600 px-5 py-3.5" 
-            : "rounded-tl-sm w-full min-w-0"
-        )}>
-          
-          {/* Prose Content */}
-          {message.content && (
-            <div className={cn(
-              "px-5 py-3.5 rounded-2xl",
-              isUser ? "" : "glass-card"
-            )}>
-              {message.imageUrl && (
-                <img 
-                  src={message.imageUrl} 
-                  alt="uploaded" 
-                  className="rounded-lg max-h-60 object-contain w-full bg-black/20 mb-2" 
-                />
-              )}
-              
-              <div className={cn(
-                "prose prose-sm max-w-none break-words",
-                isUser ? "prose-invert" : "prose-invert prose-p:leading-relaxed"
-              )}>
-                {message.role === "assistant" ? (
-                  <ReactMarkdown remarkPlugins={[remarkGfm]}>
-                    {message.content}
-                  </ReactMarkdown>
-                ) : (
-                  <p className="whitespace-pre-wrap m-0 font-medium">{message.content}</p>
-                )}
+      )}
+      
+      <div className={cn("flex-1 max-w-2xl", isUser ? "text-right" : "text-left")}>
+        {/* User Message */}
+        {isUser ? (
+          <div className="inline-block px-4 py-2 bg-agri-700 rounded-2xl rounded-br-sm text-sm">
+            <p className="whitespace-pre-wrap">{message.content}</p>
+            {message.imageUrl && (
+              <img src={message.imageUrl} alt="uploaded" className="mt-2 rounded-lg max-h-48" />
+            )}
+          </div>
+        ) : (
+          /* Assistant Message */
+          <>
+            {message.content && (
+              <div className="prose prose-invert prose-sm max-w-none mb-2">
+                <ReactMarkdown remarkPlugins={[remarkGfm]}>
+                  {message.content}
+                </ReactMarkdown>
               </div>
-            </div>
-          )}
-
-          {/* Widget Area */}
-          {renderWidget()}
-
-          {/* Footer (Agent info & Feedback) */}
-          {message.role === "assistant" && message.id !== "welcome" && (
-            <div className="flex items-center justify-between mt-1 pt-2 border-t border-agri-600/50 px-2">
-              <span className="text-[10px] uppercase tracking-widest text-neon-blue font-mono">
-                {message.agentUsed || "AGENT.LITE"}
-              </span>
-              
-              {onFeedback && (
-                <div className="flex items-center gap-1">
-                  <button
-                    onClick={() => onFeedback(message.id, "up")}
-                    className={cn(
-                      "p-1.5 rounded-md hover:bg-agri-700 transition-colors",
-                      message.rating === "up" ? "text-neon-green bg-agri-700/50" : "text-agri-400"
-                    )}
-                  >
-                    <ThumbsUp size={14} />
-                  </button>
-                  <button
-                    onClick={() => onFeedback(message.id, "down")}
-                    className={cn(
-                      "p-1.5 rounded-md hover:bg-agri-700 transition-colors",
-                      message.rating === "down" ? "text-neon-red bg-agri-700/50" : "text-agri-400"
-                    )}
-                  >
-                    <ThumbsDown size={14} />
-                  </button>
-                </div>
-              )}
-            </div>
-          )}
-        </div>
+            )}
+            {renderWidget()}
+          </>
+        )}
+        
+        {/* Feedback & Metadata */}
+        {message.role === "assistant" && message.id !== "welcome" && (
+          <div className="flex items-center gap-4 mt-2 text-xs text-agri-500">
+            <span className="font-mono">{message.agentUsed || "কৃষি-শক্তি"}</span>
+            
+            {onFeedback && (
+              <div className="flex items-center gap-1">
+                <button
+                  onClick={() => onFeedback(message.id, "up")}
+                  className={cn(
+                    "p-1 rounded hover:bg-agri-800 transition-colors",
+                    message.rating === "up" ? "text-neon-green" : "text-agri-500"
+                  )}
+                >
+                  <ThumbsUp size={12} />
+                </button>
+                <button
+                  onClick={() => onFeedback(message.id, "down")}
+                  className={cn(
+                    "p-1 rounded hover:bg-agri-800 transition-colors",
+                    message.rating === "down" ? "text-neon-red" : "text-agri-500"
+                  )}
+                >
+                  <ThumbsDown size={12} />
+                </button>
+              </div>
+            )}
+          </div>
+        )}
       </div>
+      
+      {isUser && (
+        <div className="flex-shrink-0 w-8 h-8 rounded-full bg-neon-green flex items-center justify-center text-agri-dark">
+          <User size={16} />
+        </div>
+      )}
     </div>
   );
 }
