@@ -2,7 +2,7 @@
 import logging
 import re
 
-from langdetect import detect, LangDetectException
+from langdetect import LangDetectException, detect
 
 logger = logging.getLogger(__name__)
 
@@ -64,9 +64,10 @@ async def apply_safety(response: str, vision_confidence: float | None = None) ->
 
 
 async def _reprompt_safety(original: str) -> str:
+    from langchain_core.messages import HumanMessage
+
     from app.agents.prompts import SAFETY_REPROMPT
     from app.config import get_llm
-    from langchain_core.messages import HumanMessage
 
     llm = get_llm(fast=True)
     prompt = SAFETY_REPROMPT.format(response=original)
@@ -79,8 +80,9 @@ async def _reprompt_safety(original: str) -> str:
 
 
 async def _reprompt_bangla(original: str) -> str:
-    from app.config import get_llm
     from langchain_core.messages import HumanMessage
+
+    from app.config import get_llm
 
     llm = get_llm(fast=True)
     prompt = (

@@ -1,6 +1,7 @@
 """Unit tests for MemoryManager."""
+from unittest.mock import AsyncMock, patch
+
 import pytest
-from unittest.mock import AsyncMock, patch, MagicMock
 
 
 class TestSessionMemory:

@@ -1,6 +1,6 @@
 """Unit tests for the safety layer."""
+
 import pytest
-from unittest.mock import AsyncMock, patch, MagicMock
 
 from app.utils.safety import _has_overdose_language, _is_bangla, apply_safety
 

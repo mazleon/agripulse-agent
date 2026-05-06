@@ -1,8 +1,9 @@
 """Unit tests for intent classification logic."""
-import pytest
-from unittest.mock import AsyncMock, patch, MagicMock
+from unittest.mock import AsyncMock, MagicMock, patch
 
-from app.agents.orchestrator import classify_intent, route, VALID_INTENTS
+import pytest
+
+from app.agents.orchestrator import VALID_INTENTS, classify_intent, route
 from app.agents.state import AgriState
 
 

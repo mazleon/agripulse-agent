@@ -15,8 +15,6 @@ from llama_index.core.node_parser import SentenceSplitter
 from llama_index.embeddings.fastembed import FastEmbedEmbedding
 from llama_index.vector_stores.postgres import PGVectorStore
 
-from app.config import settings
-
 logger = logging.getLogger(__name__)
 
 DOCS_DIR = Path(__file__).parent / "docs"
