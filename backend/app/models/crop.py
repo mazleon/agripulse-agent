@@ -1,11 +1,17 @@
+from __future__ import annotations
+
 import uuid
 from datetime import date, datetime
+from typing import TYPE_CHECKING
 
 from sqlalchemy import Date, DateTime, Float, ForeignKey, String, func
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.db.database import Base
+
+if TYPE_CHECKING:
+    from app.models.farmer import Farmer
 
 
 class Crop(Base):
@@ -25,4 +31,4 @@ class Crop(Base):
     notes: Mapped[str | None] = mapped_column(String(1000))
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
 
-    farmer: Mapped["Farmer"] = relationship("Farmer", back_populates="crops")  # noqa: F821
+    farmer: Mapped[Farmer] = relationship("Farmer", back_populates="crops")  # noqa: F821

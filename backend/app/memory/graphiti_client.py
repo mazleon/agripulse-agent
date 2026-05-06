@@ -56,7 +56,7 @@ class FarmerMemory:
         return [
             {
                 "fact": r.fact,
-                "score": r.score,
+                "score": getattr(r, "score", None),
                 "created_at": r.created_at.isoformat() if r.created_at else None,
             }
             for r in results
