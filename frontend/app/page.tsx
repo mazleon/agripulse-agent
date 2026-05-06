@@ -7,7 +7,7 @@ export default function HomePage() {
         The container handles the full screen on mobile (100dvh) 
         and shows up as a centered max-w-lg device-like frame on desktop.
       */}
-      <div className="w-full h-full max-w-lg relative sm:rounded-[2.5rem] sm:border-[8px] sm:border-agri-900 shadow-2xl overflow-hidden bg-agri-dark">
+      <div className="w-full h-full max-w-2xl relative sm:rounded-[2.5rem] sm:border-[8px] sm:border-agri-900 shadow-2xl overflow-hidden bg-agri-dark">
         <ChatContainer />
       </div>
     </main>

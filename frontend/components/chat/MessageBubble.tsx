@@ -4,6 +4,9 @@ import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import { Message } from "./types";
 import { Bot, ThumbsDown, ThumbsUp, User } from "lucide-react";
+import { DosageCard } from "../widgets/DosageCard";
+import { VisionDiagnosis } from "../widgets/VisionDiagnosis";
+import { MarketPriceWidget } from "../widgets/MarketPriceWidget";
 
 interface MessageBubbleProps {
   message: Message;
@@ -13,9 +16,23 @@ interface MessageBubbleProps {
 export function MessageBubble({ message, onFeedback }: MessageBubbleProps) {
   const isUser = message.role === "user";
 
+  const renderWidget = () => {
+    if (!message.widgetType || !message.widgetData) return null;
+    switch (message.widgetType) {
+      case "dosage_card":
+        return <DosageCard data={message.widgetData} />;
+      case "vision_diagnosis":
+        return <VisionDiagnosis data={message.widgetData} />;
+      case "market_price":
+        return <MarketPriceWidget data={message.widgetData} />;
+      default:
+        return null;
+    }
+  };
+
   return (
     <div className={cn("flex w-full animate-fade-in-up", isUser ? "justify-end" : "justify-start")}>
-      <div className={cn("flex max-w-[85%] md:max-w-[75%] gap-3", isUser ? "flex-row-reverse" : "flex-row")}>
+      <div className={cn("flex max-w-[90%] md:max-w-[85%] gap-3", isUser ? "flex-row-reverse" : "flex-row")}>
         {/* Avatar */}
         <div className={cn(
           "flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center mt-1",
@@ -26,35 +43,47 @@ export function MessageBubble({ message, onFeedback }: MessageBubbleProps) {
 
         {/* Content Box */}
         <div className={cn(
-          "flex flex-col gap-2 rounded-2xl px-5 py-3.5 shadow-sm",
+          "flex flex-col gap-2 rounded-2xl shadow-sm w-full",
           isUser 
-            ? "bg-agri-700 text-white rounded-tr-sm border border-agri-600" 
-            : "glass-card rounded-tl-sm"
+            ? "bg-agri-700 text-white rounded-tr-sm border border-agri-600 px-5 py-3.5" 
+            : "rounded-tl-sm w-full min-w-0"
         )}>
-          {message.imageUrl && (
-            <img 
-              src={message.imageUrl} 
-              alt="uploaded" 
-              className="rounded-lg max-h-60 object-contain w-full bg-black/20" 
-            />
-          )}
           
-          <div className={cn(
-            "prose prose-sm max-w-none break-words",
-            isUser ? "prose-invert" : "prose-invert prose-p:leading-relaxed"
-          )}>
-            {message.role === "assistant" ? (
-              <ReactMarkdown remarkPlugins={[remarkGfm]}>
-                {message.content}
-              </ReactMarkdown>
-            ) : (
-              <p className="whitespace-pre-wrap m-0 font-medium">{message.content}</p>
-            )}
-          </div>
+          {/* Prose Content */}
+          {message.content && (
+            <div className={cn(
+              "px-5 py-3.5 rounded-2xl",
+              isUser ? "" : "glass-card"
+            )}>
+              {message.imageUrl && (
+                <img 
+                  src={message.imageUrl} 
+                  alt="uploaded" 
+                  className="rounded-lg max-h-60 object-contain w-full bg-black/20 mb-2" 
+                />
+              )}
+              
+              <div className={cn(
+                "prose prose-sm max-w-none break-words",
+                isUser ? "prose-invert" : "prose-invert prose-p:leading-relaxed"
+              )}>
+                {message.role === "assistant" ? (
+                  <ReactMarkdown remarkPlugins={[remarkGfm]}>
+                    {message.content}
+                  </ReactMarkdown>
+                ) : (
+                  <p className="whitespace-pre-wrap m-0 font-medium">{message.content}</p>
+                )}
+              </div>
+            </div>
+          )}
+
+          {/* Widget Area */}
+          {renderWidget()}
 
           {/* Footer (Agent info & Feedback) */}
           {message.role === "assistant" && message.id !== "welcome" && (
-            <div className="flex items-center justify-between mt-1 pt-2 border-t border-agri-600/50">
+            <div className="flex items-center justify-between mt-1 pt-2 border-t border-agri-600/50 px-2">
               <span className="text-[10px] uppercase tracking-widest text-neon-blue font-mono">
                 {message.agentUsed || "AGENT.LITE"}
               </span>

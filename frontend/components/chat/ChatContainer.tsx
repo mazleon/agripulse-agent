@@ -6,8 +6,51 @@ import { ChatInput } from "./ChatInput";
 import { Bot } from "lucide-react";
 import { IntelligenceCards } from "../feed/IntelligenceCards";
 import { CameraOverlay } from "../scanner/CameraOverlay";
+import { WeatherRiskBar, WeatherRiskData } from "../widgets/WeatherRiskBar";
 
 const API = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
+
+// Mock Data for UI demonstration
+const mockWeatherRisk: WeatherRiskData = {
+  risk_level: "red",
+  event_name: "ভারী বৃষ্টিপাত ও কালবৈশাখী",
+  action_suggested: "ফসল দ্রুত ঘরে তুলুন অথবা পলিথিন দিয়ে ঢেকে দিন।",
+  action_type: "cover",
+  countdown_minutes: 135, // 2h 15m
+};
+
+const mockDosageMessage: Message = {
+  id: "mock-dosage",
+  role: "assistant",
+  content: "আপনার জমির জন্য সারের সঠিক পরিমাণ নিচে দেওয়া হলো:",
+  agentUsed: "RULE ENGINE",
+  widgetType: "dosage_card",
+  widgetData: {
+    ingredient: "ইউরিয়া (Urea)",
+    amount: 20,
+    unit_bigha: "কেজি",
+    unit_acre: "কেজি",
+    water_ratio: "প্রযোজ্য নয়",
+    safety_flag: true,
+  }
+};
+
+const mockMarketMessage: Message = {
+  id: "mock-market",
+  role: "assistant",
+  content: "আজকের ধানের বাজার দরের হালনাগাদ তথ্য:",
+  agentUsed: "MARKET AGENT",
+  widgetType: "market_price",
+  widgetData: {
+    crop_name: "ইরি ধান (Paddy)",
+    local_price: 1150,
+    local_market_name: "বগুড়া মহাস্থানগড় হাট",
+    dhaka_price: 1280,
+    dhaka_market_name: "ঢাকা কারওয়ান বাজার",
+    trend: "up",
+    change_percent: 2.5,
+  }
+};
 
 export function ChatContainer() {
   const [messages, setMessages] = useState<Message[]>([
@@ -17,6 +60,7 @@ export function ChatContainer() {
       content:
         "সালাম লিয়ন ভাই! আমি **কৃষি-শক্তি**। আপনার ফসল, পোকামাকড়, আবহাওয়া বা পশু-পাখি সম্পর্কে যেকোনো প্রশ্ন করুন।",
     },
+    mockMarketMessage,
   ]);
   const [input, setInput] = useState("");
   const [imageBase64, setImageBase64] = useState<string | null>(null);
@@ -24,7 +68,6 @@ export function ChatContainer() {
   const [loading, setLoading] = useState(false);
   const [sessionId] = useState(() => crypto.randomUUID());
   
-  // Neon-Ruralism specific states
   const [agentStatus, setAgentStatus] = useState<"idle" | "listening" | "processing" | "alert">("idle");
   const [showCameraOverlay, setShowCameraOverlay] = useState(false);
   const [scanResult, setScanResult] = useState<string | undefined>();
@@ -40,7 +83,6 @@ export function ChatContainer() {
     setShowCameraOverlay(true);
     setAgentStatus("processing");
     
-    // Simulate real-time AR scanning
     setTimeout(() => {
       setScanResult("Blast Disease Detected (৮০% নিশ্চিত)");
       setAgentStatus("alert");
@@ -65,8 +107,33 @@ export function ChatContainer() {
     setShowCameraOverlay(false);
     setScanResult(undefined);
     setAgentStatus("idle");
-    // Optionally trigger auto send
-    setInput(`আমি একটি ছবি স্ক্যান করেছি, ফলাফল: ${scanResult || "Blast Disease"}`);
+    
+    // Auto insert Vision Diagnosis mock
+    setMessages(prev => [...prev, {
+      id: crypto.randomUUID(),
+      role: "user",
+      content: "📷 ধানের পাতার ছবি স্ক্যান করা হয়েছে।",
+      imageUrl: imagePreview || undefined,
+    }]);
+
+    setLoading(true);
+    setTimeout(() => {
+      setLoading(false);
+      setMessages(prev => [...prev, {
+        id: crypto.randomUUID(),
+        role: "assistant",
+        content: "ছবি বিশ্লেষণ সম্পন্ন হয়েছে।",
+        agentUsed: "VISION AGENT (LITE)",
+        widgetType: "vision_diagnosis",
+        widgetData: {
+          crop_type: "ধান (Rice)",
+          disease_name: "ব্লাস্ট রোগ (Blast Disease)",
+          confidence: 85,
+          thumbnail_url: imagePreview,
+          severity: "high"
+        }
+      }]);
+    }, 1500);
   };
 
   const sendMessage = async () => {
@@ -75,14 +142,13 @@ export function ChatContainer() {
     const userMsg: Message = {
       id: crypto.randomUUID(),
       role: "user",
-      content: input || "📷 ছবি পাঠানো হয়েছে",
-      imageUrl: imagePreview || undefined,
+      content: input,
     };
     
     setMessages((prev) => [...prev, userMsg]);
     setInput("");
     setImagePreview(null);
-    setImageBase64(null); // Clear base64 right away to avoid resending
+    setImageBase64(null);
     setLoading(true);
     setAgentStatus("processing");
 
@@ -96,16 +162,11 @@ export function ChatContainer() {
       const res = await fetch(`${API}/api/v1/chat`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          message: input || "",
-          session_id: sessionId,
-          image_base64: imageBase64,
-        }),
+        body: JSON.stringify({ message: input, session_id: sessionId }),
       });
-      
       if (!res.ok) throw new Error("API Error");
-      
       const data = await res.json();
+      
       setMessages((prev) =>
         prev.map((m) =>
           m.id === placeholderId
@@ -116,17 +177,9 @@ export function ChatContainer() {
       setAgentStatus("idle");
     } catch (e) {
       setTimeout(() => {
-        setMessages((prev) =>
-          prev.map((m) =>
-            m.id === placeholderId
-              ? { 
-                  ...m, 
-                  content: "লিওন ভাই, ১ বিঘা জমিতে ২০ কেজি ইউরিয়া দিন। (Demo Response)", 
-                  agentUsed: "Lite-Agent" 
-                }
-              : m
-          )
-        );
+        // Remove placeholder and push mock dosage
+        setMessages((prev) => prev.filter(m => m.id !== placeholderId));
+        setMessages((prev) => [...prev, mockDosageMessage]);
         setAgentStatus("idle");
       }, 1000);
     } finally {
@@ -134,27 +187,11 @@ export function ChatContainer() {
     }
   };
 
-  const handleFeedback = async (msgId: string, rating: "up" | "down") => {
-    setMessages((prev) =>
-      prev.map((m) => (m.id === msgId ? { ...m, rating } : m))
-    );
-    try {
-      await fetch(`${API}/api/v1/feedback`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          session_id: sessionId,
-          message_id: msgId,
-          rating: rating === "up" ? "thumbs_up" : "thumbs_down",
-        }),
-      });
-    } catch (e) { }
-  };
-
   return (
     <>
-      <div className="flex flex-col h-[90vh] md:h-full w-full max-w-lg mx-auto bg-agri-dark overflow-hidden shadow-2xl relative">
-        {/* Header - Minimal, Neon-Ruralism style */}
+      <div className="flex flex-col h-[90vh] md:h-full w-full max-w-2xl mx-auto bg-agri-dark overflow-hidden shadow-2xl relative">
+        <WeatherRiskBar data={mockWeatherRisk} />
+
         <div className="bg-agri-dark/90 backdrop-blur-xl border-b border-agri-800 p-4 flex items-center justify-between shrink-0 z-20">
           <div className="flex items-center gap-3">
             <div className="relative">
@@ -172,17 +209,14 @@ export function ChatContainer() {
               <h2 className="text-lg font-bold text-white tracking-wide">কৃষি-শক্তি <span className="text-neon-green text-xs font-mono ml-1">v2.0</span></h2>
             </div>
           </div>
-          {/* Profile Icon Placeholder */}
           <div className="w-8 h-8 rounded-full bg-earth-500 border border-earth-300"></div>
         </div>
 
-        {/* Feed & Messages Area */}
         <div className="flex-1 overflow-y-auto p-4 space-y-6 scrollbar-hide relative z-10">
-          {/* Only show cards if there are few messages, to act as a feed */}
-          {messages.length <= 3 && <IntelligenceCards />}
+          {messages.length <= 4 && <IntelligenceCards />}
           
           {messages.map((msg) => (
-            <MessageBubble key={msg.id} message={msg} onFeedback={handleFeedback} />
+            <MessageBubble key={msg.id} message={msg} />
           ))}
           
           {loading && (
@@ -197,7 +231,6 @@ export function ChatContainer() {
           <div ref={bottomRef} className="h-10" />
         </div>
 
-        {/* Input */}
         <ChatInput
           input={input}
           setInput={setInput}
@@ -215,7 +248,6 @@ export function ChatContainer() {
         />
       </div>
 
-      {/* Camera Overlay */}
       {showCameraOverlay && imagePreview && (
         <CameraOverlay 
           imagePreview={imagePreview} 

@@ -26,7 +26,7 @@
     @apply bg-agri-800/60 backdrop-blur-xl border border-agri-600/30 shadow-lg text-white;
   }
   .glass-neon-border {
-    @apply border border-neon-green/30 shadow-[inset_0_0_10px_rgba(57,255,20,0.1)];
+    @apply border border-neon-green border-opacity-30 shadow-[inset_0_0_10px_rgba(57,255,20,0.1)];
   }
   .scrollbar-hide::-webkit-scrollbar {
     display: none;
