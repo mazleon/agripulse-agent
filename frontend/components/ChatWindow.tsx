@@ -13,8 +13,8 @@ interface Message {
   rating?: "up" | "down";
 }
 
-const API = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8033";
-const WS_URL = process.env.NEXT_PUBLIC_WS_URL || "ws://localhost:8033";
+const API = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
+const WS_URL = process.env.NEXT_PUBLIC_WS_URL || "ws://localhost:8000";
 
 export default function ChatWindow() {
   const [messages, setMessages] = useState<Message[]>([
