@@ -2,8 +2,35 @@
 @tailwind components;
 @tailwind utilities;
 
-:root {
-  --agri-green: #2d6a4f;
-  --agri-light: #b7e4c7;
-  --agri-gold: #d4a017;
+@layer base {
+  :root {
+    --background: #fcfcfc;
+    --foreground: #0f172a;
+  }
+
+  body {
+    color: var(--foreground);
+    background: var(--background);
+    background-image: 
+      radial-gradient(at 0% 0%, hsla(140, 100%, 94%, 1) 0px, transparent 50%),
+      radial-gradient(at 100% 0%, hsla(33, 100%, 94%, 1) 0px, transparent 50%);
+    background-attachment: fixed;
+  }
+}
+
+@layer utilities {
+  .glass {
+    @apply bg-white/70 backdrop-blur-md border border-white/40 shadow-sm;
+  }
+  .glass-dark {
+    @apply bg-agri-900/80 backdrop-blur-lg border border-agri-700/50 shadow-lg text-white;
+  }
+  /* Custom scrollbar for chat */
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
 }
