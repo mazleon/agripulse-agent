@@ -1,25 +1,29 @@
 """Shared LlamaIndex query engine — used by KnowledgeAgent."""
+
 from functools import lru_cache
 
 from llama_index.core import VectorStoreIndex
 from llama_index.embeddings.fastembed import FastEmbedEmbedding
-from llama_index.vector_stores.postgres import PGVectorStore
+from llama_index.vector_stores.qdrant import QdrantVectorStore
+from qdrant_client import QdrantClient
 
 from app.config import settings
 
 EMBED_MODEL = FastEmbedEmbedding(model_name="BAAI/bge-m3")
 
 
+def _make_qdrant_client() -> QdrantClient:
+    return QdrantClient(
+        url=settings.QDRANT_URL,
+        api_key=settings.QDRANT_API_KEY or None,
+    )
+
+
 @lru_cache(maxsize=1)
 def get_query_engine():
-    vector_store = PGVectorStore.from_params(
-        database="agripulse",
-        host=settings.DATABASE_URL.split("@")[1].split(":")[0] if "@" in settings.DATABASE_URL else "localhost",
-        password="agripulse",
-        port=5432,
-        user="agripulse",
-        table_name="agripulse_rag_embeddings",
-        embed_dim=1024,
+    vector_store = QdrantVectorStore(
+        client=_make_qdrant_client(),
+        collection_name=settings.QDRANT_COLLECTION_NAME,
     )
     index = VectorStoreIndex.from_vector_store(
         vector_store=vector_store,

@@ -63,6 +63,11 @@ class Settings(BaseSettings):
     NEO4J_USER: str = "neo4j"
     NEO4J_PASSWORD: str = "agripulse_dev"
 
+    # ── Qdrant Cloud (vector store for RAG) ──────────────────────────────────
+    QDRANT_URL: str = "http://localhost:6333"  # override with Cloud URL in .env
+    QDRANT_API_KEY: str = ""                   # leave empty for local dev Qdrant
+    QDRANT_COLLECTION_NAME: str = "agripulse_rag"
+
     # ── Embeddings ────────────────────────────────────────────────────────────
     EMBEDDING_PROVIDER: str = "fastembed"
 
